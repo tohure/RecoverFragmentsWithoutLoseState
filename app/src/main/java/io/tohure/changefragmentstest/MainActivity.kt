@@ -1,18 +1,24 @@
 package io.tohure.changefragmentstest
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import kotlinx.android.synthetic.main.activity_main.*
+
+private const val TAG_ONE = "first"
+private const val TAG_SECOND = "second"
+private const val TAG_THIRD = "third"
+private const val TAG_FOURTH = "fourth"
+private const val MAX_HISTORIC = 5
 
 class MainActivity : AppCompatActivity() {
 
     private var currentFragment: Fragment? = null
 
     private val listState = mutableListOf<StateFragment>()
-    private var currentTag: String = "one"
-    private var oldTag: String = "one"
+    private var currentTag: String = TAG_ONE
+    private var oldTag: String = TAG_ONE
     private var currentMenuItemId: Int = R.id.navigation_shop
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,32 +42,31 @@ class MainActivity : AppCompatActivity() {
 
                 when (currentMenuItemId) {
                     R.id.navigation_shop -> {
-                        currentTag = "one"
-                        fragment = FirstFragment.newInstance("one", "first")
+                        currentTag = TAG_ONE
+                        fragment = FirstFragment.newInstance()
                         loadFragment(fragment, currentTag)
-                        return@setOnNavigationItemSelectedListener true
                     }
                     R.id.navigation_gifts -> {
-                        currentTag = "second"
-                        fragment = SecondFragment.newInstance("two", "second")
+                        currentTag = TAG_SECOND
+                        fragment = SecondFragment.newInstance()
                         loadFragment(fragment, currentTag)
-                        return@setOnNavigationItemSelectedListener true
                     }
                     R.id.navigation_cart -> {
-                        currentTag = "third"
-                        fragment = ThirdFragment.newInstance("three", "third")
+                        currentTag = TAG_THIRD
+                        fragment = ThirdFragment.newInstance()
                         loadFragment(fragment, currentTag)
-                        return@setOnNavigationItemSelectedListener true
                     }
                     R.id.navigation_profile -> {
-                        currentTag = "fourth"
-                        fragment = FourthFragment.newInstance("four", "fourth")
+                        currentTag = TAG_FOURTH
+                        fragment = FourthFragment.newInstance()
                         loadFragment(fragment, currentTag)
-                        return@setOnNavigationItemSelectedListener true
                     }
                 }
 
+                return@setOnNavigationItemSelectedListener true
+
             }
+
             false
         }
 
@@ -101,18 +106,18 @@ class MainActivity : AppCompatActivity() {
         val menu = navigation.menu
 
         when (oldTag) {
-            "one" -> menu.getItem(0).isChecked = true
-            "second" -> menu.getItem(1).isChecked = true
-            "third" -> menu.getItem(2).isChecked = true
-            "fourth" -> menu.getItem(3).isChecked = true
+            TAG_ONE -> menu.getItem(0).isChecked = true
+            TAG_SECOND -> menu.getItem(1).isChecked = true
+            TAG_THIRD -> menu.getItem(2).isChecked = true
+            TAG_FOURTH -> menu.getItem(3).isChecked = true
         }
 
     }
 
     private fun loadFirstFragment() {
         val transaction = supportFragmentManager.beginTransaction()
-        currentFragment = FirstFragment.newInstance("one", "first")
-        transaction.add(R.id.frame_container, currentFragment, "one")
+        currentFragment = FirstFragment.newInstance()
+        transaction.add(R.id.frame_container, currentFragment, TAG_ONE)
         transaction.commit()
     }
 
@@ -135,17 +140,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //Like YouTube
     private fun addBackStack() {
         Log.d("thr add", "$currentTag - $oldTag")
 
         when (listState.size) {
-            5 -> {
-                listState[1].oldFragmentTag = "one"
-                listState[0] = listState[1]
-                listState[1] = listState[2]
-                listState[2] = listState[3]
-                listState[3] = listState[4]
-                listState[4] = StateFragment(currentTag, oldTag)
+            MAX_HISTORIC -> {
+
+                listState[1].oldFragmentTag = TAG_ONE
+                val firstState = listState[1]
+
+                for (i in listState.indices) {
+                    if (listState.indices.contains((i+1))){
+                        listState[i] = listState[i + 1]
+                    }
+                }
+
+                listState[0] = firstState
+                listState[listState.lastIndex] = StateFragment(currentTag, oldTag)
             }
             else -> {
                 listState.add(StateFragment(currentTag, oldTag))

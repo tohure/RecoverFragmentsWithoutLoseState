@@ -10,8 +10,7 @@
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="match_parent"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -19,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
-        android:foreground="?attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
         app:menu="@menu/navigation" />
 
 </android.support.design.widget.CoordinatorLayout>
