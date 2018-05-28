@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                 val firstState = listState[1]
 
                 for (i in listState.indices) {
-                    if (listState.indices.contains((i+1))){
+                    if (listState.indices.contains((i + 1))) {
                         listState[i] = listState[i + 1]
                     }
                 }
